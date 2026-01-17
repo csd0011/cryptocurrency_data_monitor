@@ -4,7 +4,7 @@ services:
   runtime: node
   plan: free
   repo: https://github.com/csd0011/cryptocurrency_data_monitor
-  buildCommand: npm install && npm run build
+  buildCommand: npm ci && npm run build
   startCommand: npm start
   autoDeploy: false
   envVars:
