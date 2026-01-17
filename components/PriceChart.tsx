@@ -13,24 +13,32 @@ import {
 import 'chartjs-adapter-date-fns'
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Tooltip, TimeScale)
 
-export default function PriceChart({ initialData, coinId }: { initialData: number[][], coinId: string }) {
+export default function PriceChart({ initialData, coinId }: { initialData: any, coinId: string }) {
+  const safeInitial = Array.isArray(initialData) ? initialData : []
   const [days, setDays] = useState(30)
-  const [data, setData] = useState(initialData)
+  const [data, setData] = useState<number[][]>(safeInitial)
 
   async function changeRange(d: number) {
     setDays(d)
-    const res = await fetch(`/api/local/market_chart?coin=${coinId}&days=${d}`)
-    const json = await res.json()
-    setData(json.prices)
+    try {
+      const res = await fetch(`/api/local/market_chart?coin=${coinId}&days=${d}`)
+      const json = await res.json()
+      setData(Array.isArray(json?.prices) ? json.prices : [])
+    } catch {
+      setData([])
+    }
   }
 
+  const labels = data.map(p => (Array.isArray(p) ? p[0] : null)).filter(Boolean) as number[]
+  const values = data.map(p => (Array.isArray(p) ? p[1] : null)).filter(v => v !== null) as number[]
+
   const chartData = {
-    labels: data.map(p => p[0]),
+    labels,
     datasets: [{
       label: 'Price (USD)',
-      data: data.map(p => p[1]),
+      data: values,
       borderColor: 'rgba(0,229,255,0.92)',
-      backgroundColor: 'linear-gradient(180deg, rgba(0,229,255,0.08), rgba(255,47,255,0.04))',
+      backgroundColor: 'rgba(0,229,255,0.08)',
       tension: 0.18,
       pointRadius: 0,
       fill: true
