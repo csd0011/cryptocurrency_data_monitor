@@ -1,0 +1,12 @@
+services:
+- type: web
+  name: cryptocurrency-data-monitor
+  runtime: node
+  plan: free
+  repo: https://github.com/csd0011/cryptocurrency_data_monitor
+  buildCommand: npm install && npm run build
+  startCommand: npm start
+  autoDeploy: false
+  envVars:
+  - key: NODE_ENV
+    value: production

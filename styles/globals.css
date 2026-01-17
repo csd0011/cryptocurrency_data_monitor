@@ -1,0 +1,123 @@
+:root{
+  --bg:#0b0b10;
+  --panel:#0f1116cc; /* semi-transparent glass */
+  --muted:#94a3b8;
+  --accent-cyan:#00e5ff;
+  --accent-magenta:#ff2fff;
+  --glass-border: rgba(255,255,255,0.04);
+  --glass-highlight: rgba(255,255,255,0.03);
+  --card-radius:12px;
+  --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", "Helvetica Neue", monospace;
+  --ui: Inter,system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial;
+}
+
+*{box-sizing:border-box}
+html,body,#__next {height:100%;}
+html,body {
+  margin:0; padding:0;
+  font-family: var(--ui);
+  background:
+    radial-gradient(1200px 400px at 10% 10%, rgba(0,229,255,0.04), transparent 8%),
+    radial-gradient(900px 300px at 95% 90%, rgba(255,47,255,0.03), transparent 6%),
+    var(--bg);
+  color:#e6eef8;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  background-attachment: fixed;
+}
+
+/* subtle film grain */
+body::after{
+  content:"";
+  pointer-events:none;
+  position:fixed; inset:0;
+  background-image: linear-gradient(rgba(255,255,255,0.01) 1px, transparent 1px);
+  background-size: 100% 2px;
+  mix-blend-mode: overlay;
+  opacity:0.5;
+}
+
+/* header */
+header{
+  display:flex; align-items:center; gap:16px;
+  padding:20px 28px; border-bottom:1px solid rgba(255,255,255,0.03);
+  backdrop-filter: blur(6px) saturate(120%);
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.00));
+}
+
+h1{ font-weight:700; margin:0; letter-spacing:0.6px; color:var(--accent-cyan); text-shadow: 0 6px 18px rgba(0,229,255,0.06) }
+header small { color:var(--muted); margin-left:6px; font-size:12px }
+
+/* main container */
+main{ padding:28px; max-width:1100px; margin:0 auto; }
+
+/* glass card */
+.card{
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+  border: 1px solid var(--glass-border);
+  box-shadow: 0 6px 18px rgba(2,6,23,0.6), inset 0 1px 0 var(--glass-highlight);
+  border-radius: var(--card-radius);
+  padding:14px;
+  backdrop-filter: blur(6px) saturate(140%);
+}
+
+/* grid */
+.grid {
+  display:grid;
+  grid-template-columns: repeat(auto-fit,minmax(240px,1fr));
+  gap:14px;
+}
+
+/* coin card specifics */
+.coin-card {
+  display:flex; flex-direction:column; gap:8px;
+  transition: transform .18s ease, box-shadow .18s ease;
+  cursor:pointer;
+}
+.coin-card:hover{
+  transform: translateY(-6px);
+  box-shadow: 0 18px 40px rgba(0,229,255,0.06);
+}
+
+/* row */
+.row { display:flex; align-items:center; gap:12px; justify-content:space-between; }
+
+/* coin header */
+.coin-meta { display:flex; gap:12px; align-items:center }
+.coin-meta img { width:36px; height:36px; border-radius:8px; background:rgba(255,255,255,0.02); padding:4px }
+
+/* price & change */
+.price { font-weight:700; color:#e6eef8; font-family: var(--mono); font-size:16px }
+.change-pos { color:#35d27f; font-weight:600 }
+.change-neg { color:#ff6b95; font-weight:600 }
+
+/* chart container */
+.chart-wrap { padding:12px; border-radius:10px; background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.00)); border:1px solid rgba(255,255,255,0.02) }
+
+/* buttons */
+.btn {
+  background: linear-gradient(90deg, rgba(0,229,255,0.06), rgba(255,47,255,0.04));
+  color:var(--accent-cyan);
+  border:1px solid rgba(0,229,255,0.12);
+  padding:6px 10px; border-radius:8px; cursor:pointer; font-weight:600;
+}
+.btn[disabled]{ opacity:0.5; cursor:default }
+
+/* search */
+.search {
+  display:flex; gap:8px; align-items:center; margin-bottom:12px;
+}
+.search input{
+  background:transparent; border:1px solid rgba(255,255,255,0.04); padding:8px 10px; border-radius:8px; color:var(--muted); min-width:220px;
+  outline:none;
+}
+.search input:focus{ border-color: rgba(0,229,255,0.18); box-shadow: 0 6px 30px rgba(0,229,255,0.04); color:#e6eef8 }
+
+/* headings */
+h2{ margin:6px 0 14px 0; color:#cfefff; font-size:18px }
+
+/* responsive tweaks */
+@media (max-width:640px){
+  main{ padding:16px }
+  .coin-meta img{ width:28px; height:28px }
+}

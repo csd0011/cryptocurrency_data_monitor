@@ -1,0 +1,10 @@
+import { NextResponse } from 'next/server'
+
+export async function GET(req: Request) {
+  const url = new URL(req.url)
+  const coin = url.searchParams.get('coin') || 'bitcoin'
+  const days = url.searchParams.get('days') || '30'
+  const res = await fetch(`https://api.coingecko.com/api/v3/coins/${coin}/market_chart?vs_currency=usd&days=${days}`)
+  const data = await res.json()
+  return NextResponse.json(data)
+}
