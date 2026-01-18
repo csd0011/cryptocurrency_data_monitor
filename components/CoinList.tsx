@@ -9,7 +9,7 @@ type Coin = {
   name?: string
   symbol?: string
   api_symbol?: string
-  thumb?: string
+  image?: string
   market_cap_rank?: number | null
   current_price?: number | null
   price_change_percentage_24h?: number | null
@@ -26,24 +26,38 @@ export default function CoinList() {
   const { data: searchResults } = useSWR(searchKey, fetcher, { revalidateOnFocus: false })
 
   const coins: Coin[] = useMemo(() => {
-    // If search is active and searchResults contains an array under .coins, map it.
-    if (query && searchResults) {
-      const s = Array.isArray(searchResults.coins) ? searchResults.coins : Array.isArray(searchResults) ? searchResults : []
-      return s.map((c: any) => ({
-        id: String(c.id ?? c.symbol ?? ''),
+    const normalize = (c: any): Coin | null => {
+      if (!c) return null
+      const id = String(c.id ?? c.symbol ?? '')
+      if (!id) return null
+      // Possible shapes:
+      // 1) { thumb, small, large, id, name, api_symbol, symbol }
+      // 2) { image: { thumb, small, large }, id, name, symbol }
+      // 3) market list item: { id, name, symbol, image, current_price, ... }
+      const image =
+        c.image ??
+        c.thumb ??
+        (c.image && typeof c.image === 'object' ? c.image.small ?? c.image.thumb ?? c.image.large : undefined) ??
+        '';
+      return {
+        id,
         name: c.name,
         symbol: c.symbol ?? c.api_symbol,
         api_symbol: c.api_symbol,
-        thumb: c.thumb ?? '',
+        image,
         market_cap_rank: c.market_cap_rank ?? null,
         current_price: c.current_price ?? null,
-        price_change_percentage_24h: c.price_change_percentage_24h ?? null
-      })).filter((c: { id: any }) => c.id) // drop items without id
+        price_change_percentage_24h: c.price_change_percentage_24h ?? null,
+      }
     }
 
-    // If topList is an array use it; if it has .coins use that; otherwise return empty array
-    if (Array.isArray(topList)) return topList
-    if (topList && Array.isArray((topList as any).coins)) return (topList as any).coins
+    if (query && searchResults) {
+      const s = Array.isArray(searchResults.coins) ? searchResults.coins : Array.isArray(searchResults) ? searchResults : []
+      return s.map(normalize).filter(Boolean) as Coin[]
+    }
+
+    if (Array.isArray(topList)) return topList.map(normalize).filter(Boolean) as Coin[]
+    if (topList && Array.isArray((topList as any).coins)) return (topList as any).coins.map(normalize).filter(Boolean) as Coin[]
     return []
   }, [query, searchResults, topList])
 

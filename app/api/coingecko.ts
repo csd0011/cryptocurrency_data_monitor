@@ -1,23 +1,41 @@
-import { fetchWithRetry } from "lib/fetchWithRetry"
+// lib/coingecko.ts
+import { fetchWithRetry, FetchResult } from '../../lib/fetchWithRetry';
 
-export async function fetchCoinsList() {
-  const res = await fetchWithRetry(
-    'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=50&page=1&price_change_percentage=24h',{}, 3, 8000
-  )
-  if (!res.ok) throw new Error('Failed to fetch coins')
-  return res.json()
+export type CoinDetail = {
+  id: string;
+  name: string;
+  symbol: string;
+  image?: { thumb?: string; small?: string; large?: string };
+  market_cap_rank?: number | null;
+  market_data?: {
+    current_price?: { usd?: number | null };
+    price_change_percentage_24h?: number | null;
+  };
+  // add other fields as needed
+};
+
+export type MarketChart = {
+  prices: Array<[number, number]>;
+  market_caps?: Array<[number, number]>;
+  total_volumes?: Array<[number, number]>;
+};
+
+async function unwrap<T>(res: FetchResult<T>, ctx = 'fetch') : Promise<T> {
+  if (!res.ok) {
+    const msg = res.error ?? `HTTP ${res.status ?? 'error'}`;
+    throw new Error(`${ctx} failed: ${msg}`);
+  }
+  return res.data;
 }
 
-export async function fetchCoinDetail(id: string) {
-  const res = await fetchWithRetry(`https://api.coingecko.com/api/v3/coins/${id}`, {}, 3, 8000)
-  if (!res.ok) throw new Error('Failed to fetch coin detail')
-  return res.json()
+export async function fetchCoinDetail(id: string): Promise<CoinDetail> {
+  const res = await fetchWithRetry<CoinDetail>(`https://api.coingecko.com/api/v3/coins/${encodeURIComponent(id)}`);
+  return unwrap(res, 'fetchCoinDetail');
 }
 
-export async function fetchCoinMarketChart(id: string, days = 30) {
-  const res = await fetchWithRetry(
-    `https://api.coingecko.com/api/v3/coins/${id}/market_chart?vs_currency=usd&days=${days}`, {}, 3, 8000
-  )
-  if (!res.ok) throw new Error('Failed to fetch market chart')
-  return res.json()
+export async function fetchCoinMarketChart(id: string, days = 30): Promise<MarketChart> {
+  const res = await fetchWithRetry<MarketChart>(
+    `https://api.coingecko.com/api/v3/coins/${encodeURIComponent(id)}/market_chart?vs_currency=usd&days=${encodeURIComponent(String(days))}`
+  );
+  return unwrap(res, 'fetchCoinMarketChart');
 }

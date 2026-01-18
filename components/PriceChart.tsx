@@ -11,7 +11,10 @@ import {
   TimeScale
 } from 'chart.js'
 import 'chartjs-adapter-date-fns'
+import { fetchWithRetry, FetchResult } from 'lib/fetchWithRetry'
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Tooltip, TimeScale)
+
+type MarketChart = { prices: Array<[number, number]> }
 
 export default function PriceChart({ initialData, coinId }: { initialData: any, coinId: string }) {
   const safeInitial = Array.isArray(initialData) ? initialData : []
@@ -21,8 +24,16 @@ export default function PriceChart({ initialData, coinId }: { initialData: any, 
   async function changeRange(d: number) {
     setDays(d)
     try {
-      const res = await fetch(`/api/local/market_chart?coin=${coinId}&days=${d}`)
-      const json = await res.json()
+      const res = await fetchWithRetry<MarketChart>(`/api/local/market_chart?coin=${encodeURIComponent(coinId)}&days=${d}`)
+
+      if (!res.ok) {
+        // handle error branch explicitly
+        setData([])
+        return
+      }
+
+      // res is narrowed to ok branch; res.data has type MarketChart
+      const json = res.data
       setData(Array.isArray(json?.prices) ? json.prices : [])
     } catch {
       setData([])

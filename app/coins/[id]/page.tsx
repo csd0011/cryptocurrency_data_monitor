@@ -1,17 +1,17 @@
-import PriceChart from '../../../components/PriceChart'
-import { fetchCoinDetail, fetchCoinMarketChart } from '../../api/coingecko'
-import CoinDetails from '../../../components/CoinDetails'
+// app/coins/[id]/page.tsx
+import PriceChart from '../../../components/PriceChart';
+import { fetchCoinDetail, fetchCoinMarketChart } from '../../api/coingecko';
+import CoinDetails from '../../../components/CoinDetails';
 
-type Props = { params: { id: string } }
+type Props = { params: { id: string } };
 
 export default async function CoinPage({ params }: Props) {
-  const id = params.id
-  const coin = await fetchCoinDetail(id)
-  const chart = await fetchCoinMarketChart(id, 30)
+  const id = params.id;
+  const coin = await fetchCoinDetail(id);
+  const chart = await fetchCoinMarketChart(id, 30);
 
   return (
     <div>
-      {/* Row: title left, quick stats/actions right */}
       <div style={{ maxWidth: 900, margin: '0 auto 12px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
           <img src={coin.image?.large || coin.image?.thumb} alt={coin.name} width={48} height={48} style={{ borderRadius: 10 }} />
@@ -38,7 +38,6 @@ export default async function CoinPage({ params }: Props) {
         </div>
       </div>
 
-      {/* Shared-width container: chart above details, both full width */}
       <div style={{ maxWidth: 900, margin: '0 auto', display: 'grid', gap: 16 }}>
         <div style={{ width: '100%' }}>
           <PriceChart initialData={chart.prices} coinId={id} />
@@ -49,5 +48,5 @@ export default async function CoinPage({ params }: Props) {
         </div>
       </div>
     </div>
-  )
+  );
 }
