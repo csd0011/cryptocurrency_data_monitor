@@ -17,10 +17,28 @@ export async function fetchWithRetry<T = unknown>(
       const res = await fetch(url, { ...opts, signal: controller.signal });
       clearTimeout(id);
       const ct = res.headers.get?.('content-type') ?? '';
-      const body = ct.includes('application/json') ? await res.clone().json().catch(() => undefined) : await res.clone().text().catch(() => undefined);
+
+      let body: unknown = undefined;
+      if (ct.includes('application/json')) {
+        body = await res.clone().json().catch(() => undefined);
+      } else {
+        body = await res.clone().text().catch(() => undefined);
+      }
 
       if (!res.ok) {
-        return { ok: false, status: res.status, error: `HTTP ${res.status} | ${body}`, body };
+        let detail = '';
+        if (body && typeof body === 'object') {
+          try {
+            detail = (body as any).message ?? (body as any).error ?? JSON.stringify(body);
+          } catch {
+            detail = JSON.stringify(body);
+          }
+        } else if (typeof body === 'string' && body.trim()) {
+          detail = body.trim();
+        }
+
+        const msg = detail ? `HTTP ${res.status}: ${detail}` : `HTTP ${res.status}`;
+        return { ok: false, status: res.status, error: msg, body };
       }
 
       const data = ct.includes('application/json') ? await res.json() : (body as unknown);
