@@ -20,7 +20,7 @@ const fetcher = (url: string) => fetch(url).then(r => r.json())
 export default function CoinList() {
   const [query, setQuery] = useState('')
 
-  const { data: topList, error } = useSWR('/api/local/coins', fetcher, { refreshInterval: 60000 })
+  const { data: topList, error } = useSWR('/api/local/coins', fetcher, { refreshInterval: 180000 })
 
   const searchKey = query ? `/api/local/search?q=${encodeURIComponent(query)}` : null
   const { data: searchResults } = useSWR(searchKey, fetcher, { revalidateOnFocus: false })

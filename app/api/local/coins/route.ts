@@ -4,7 +4,7 @@ import { fetchWithRetry } from '../../../../lib/fetchWithRetry';
 
 export async function GET() {
   const res = await fetchWithRetry<any>(
-    'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=2&page=1&price_change_percentage=24h'
+    'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=50&page=1&price_change_percentage=24h'
   );
 
   if (!res.ok) {
