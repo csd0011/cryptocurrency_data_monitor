@@ -4,11 +4,15 @@ import { fetchWithRetry } from '../../../../lib/fetchWithRetry';
 
 export async function GET() {
   const res = await fetchWithRetry<any>(
-    'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=5&page=1&price_change_percentage=24h'
+    'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=3&page=1&price_change_percentage=24h'
   );
 
   if (!res.ok) {
     const status = res.status ?? 502;
+    // If 429, return a throttled status to client and avoid caching the 429 body
+    if (status === 429) {
+      return NextResponse.json({ error: 'Rate limited' }, { status: 429 })
+    }
     return NextResponse.json(
       { error: res.error ?? 'Failed to fetch coins', body: res.body },
       { status }
