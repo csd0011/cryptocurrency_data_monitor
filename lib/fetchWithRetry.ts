@@ -20,7 +20,7 @@ export async function fetchWithRetry<T = unknown>(
       const body = ct.includes('application/json') ? await res.clone().json().catch(() => undefined) : await res.clone().text().catch(() => undefined);
 
       if (!res.ok) {
-        return { ok: false, status: res.status, error: `HTTP ${res.status}`, body };
+        return { ok: false, status: res.status, error: `HTTP ${res.status} | ${body}`, body };
       }
 
       const data = ct.includes('application/json') ? await res.json() : (body as unknown);
