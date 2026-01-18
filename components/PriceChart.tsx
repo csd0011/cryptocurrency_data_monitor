@@ -24,16 +24,13 @@ export default function PriceChart({ initialData, coinId }: { initialData: any, 
   async function changeRange(d: number) {
     setDays(d)
     try {
-      const res = await fetchWithRetry<MarketChart>(`/api/local/market_chart?coin=${encodeURIComponent(coinId)}&days=${d}`)
-
+      const res = await fetch(`/api/local/market_chart?coin=${encodeURIComponent(coinId)}&days=${d}`)
+      const json = await res.json()
       if (!res.ok) {
-        // handle error branch explicitly
         setData([])
         return
       }
 
-      // res is narrowed to ok branch; res.data has type MarketChart
-      const json = res.data
       setData(Array.isArray(json?.prices) ? json.prices : [])
     } catch {
       setData([])
