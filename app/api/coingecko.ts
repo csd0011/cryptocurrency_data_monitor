@@ -31,7 +31,7 @@ export async function fetchCoinDetail(id: string): Promise<CoinDetail> {
   return unwrap(res, 'fetchCoinDetail');
 }
 
-export async function fetchCoinMarketChart(id: string, days = 30): Promise<MarketChart> {
+export async function fetchCoinMarketChart(id: string, days = 7): Promise<MarketChart> {
   const res = await fetchWithRetry<MarketChart>(
     `https://api.coingecko.com/api/v3/coins/${encodeURIComponent(id)}/market_chart?vs_currency=usd&days=${encodeURIComponent(String(days))}`
   );

@@ -30,7 +30,7 @@ export async function fetchWithRetry<T = unknown>(
       const isLast = i === attempts - 1;
       const message = err?.name === 'AbortError' ? 'timeout' : (err?.message ?? String(err));
       if (isLast) return { ok: false, error: message };
-      await sleep(5000 * Math.pow(2, i));
+      await sleep(200 * Math.pow(2, i));
     }
   }
 

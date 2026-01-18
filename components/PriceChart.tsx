@@ -13,8 +13,6 @@ import {
 import 'chartjs-adapter-date-fns'
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Tooltip, TimeScale)
 
-type MarketChart = { prices: Array<[number, number]> }
-
 export default function PriceChart({ initialData, coinId }: { initialData: any, coinId: string }) {
   const safeInitial = Array.isArray(initialData) ? initialData : []
   const [days, setDays] = useState(7)
@@ -23,7 +21,7 @@ export default function PriceChart({ initialData, coinId }: { initialData: any, 
   async function changeRange(d: number) {
     setDays(d)
     try {
-      const res = await fetch(`/api/local/market_chart?coin=${encodeURIComponent(coinId)}&days=${d}`)
+      const res = await fetch(`/api/local/market_chart?coin=${encodeURIComponent(coinId)}&days=${encodeURIComponent(d)}`)
       const json = await res.json()
       if (!res.ok) {
         setData([])
