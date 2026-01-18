@@ -11,7 +11,7 @@ export async function fetchWithRetry(url: string, opts: RequestInit = {}, attemp
     } catch (err) {
       clearTimeout(id);
       if (i === attempts - 1) throw err;
-      await sleep(1000 * Math.pow(2, i)); // exponential backoff
+      await sleep(500 * Math.pow(2, i)); // exponential backoff
     }
   }
   throw new Error('Unreachable');
