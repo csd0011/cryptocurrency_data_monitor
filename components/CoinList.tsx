@@ -30,15 +30,11 @@ export default function CoinList() {
       if (!c) return null
       const id = String(c.id ?? c.symbol ?? '')
       if (!id) return null
-      // Possible shapes:
-      // 1) { thumb, small, large, id, name, api_symbol, symbol }
-      // 2) { image: { thumb, small, large }, id, name, symbol }
-      // 3) market list item: { id, name, symbol, image, current_price, ... }
       const image =
         c.image ??
         c.thumb ??
-        (c.image && typeof c.image === 'object' ? c.image.small ?? c.image.thumb ?? c.image.large : undefined) ??
-        '';
+        (c.image && typeof c.image === 'object' ? c.image.small ?? c.image.thumb ?? c.image.large : '') ??
+        ''
       return {
         id,
         name: c.name,
@@ -51,18 +47,22 @@ export default function CoinList() {
       }
     }
 
-    if (query && searchResults) {
+    // If user is searching, prefer searchResults
+    if (query) {
+      if (!searchResults) return []
       const s = Array.isArray(searchResults.coins) ? searchResults.coins : Array.isArray(searchResults) ? searchResults : []
       return s.map(normalize).filter(Boolean) as Coin[]
     }
 
-    if (Array.isArray(topList)) return topList.map(normalize).filter(Boolean) as Coin[]
-    if (topList && Array.isArray((topList as any).coins)) return (topList as any).coins.map(normalize).filter(Boolean) as Coin[]
-    return []
+    // No query: use topList (handle both array and { coins: [] } shapes)
+    const list = Array.isArray(topList)
+      ? topList
+      : (topList && Array.isArray((topList as any).coins) ? (topList as any).coins : [])
+    return list.map(normalize).filter(Boolean) as Coin[]
   }, [query, searchResults, topList])
 
   if (error) return <div className="card">Failed to load</div>
-  if (!topList) return <div className="card">Loading...</div>
+  if (!query && !topList) return <div className="card">Loading...</div>
 
   return (
     <div>
