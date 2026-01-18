@@ -1,4 +1,3 @@
-// app/coins/[id]/page.tsx
 import PriceChart from '../../../components/PriceChart';
 import { fetchCoinDetail, fetchCoinMarketChart } from '../../api/coingecko';
 import CoinDetails from '../../../components/CoinDetails';

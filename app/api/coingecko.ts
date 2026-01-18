@@ -1,4 +1,3 @@
-// lib/coingecko.ts
 import { fetchWithRetry, FetchResult } from '../../lib/fetchWithRetry';
 
 export type CoinDetail = {
@@ -11,7 +10,6 @@ export type CoinDetail = {
     current_price?: { usd?: number | null };
     price_change_percentage_24h?: number | null;
   };
-  // add other fields as needed
 };
 
 export type MarketChart = {

@@ -1,4 +1,3 @@
-// lib/fetchWithRetry.ts
 export type FetchResult<T> =
   | { ok: true; status: number; data: T }
   | { ok: false; status?: number; error: string; body?: unknown };

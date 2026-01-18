@@ -1,4 +1,3 @@
-// app/api/coins/route.ts
 import { NextResponse } from 'next/server';
 import { fetchWithRetry } from '../../../../lib/fetchWithRetry';
 
