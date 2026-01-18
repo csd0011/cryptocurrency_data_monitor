@@ -11,14 +11,13 @@ import {
   TimeScale
 } from 'chart.js'
 import 'chartjs-adapter-date-fns'
-import { fetchWithRetry, FetchResult } from 'lib/fetchWithRetry'
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Tooltip, TimeScale)
 
 type MarketChart = { prices: Array<[number, number]> }
 
 export default function PriceChart({ initialData, coinId }: { initialData: any, coinId: string }) {
   const safeInitial = Array.isArray(initialData) ? initialData : []
-  const [days, setDays] = useState(30)
+  const [days, setDays] = useState(7)
   const [data, setData] = useState<number[][]>(safeInitial)
 
   async function changeRange(d: number) {
