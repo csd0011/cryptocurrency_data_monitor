@@ -6,13 +6,12 @@ type Props = { params: { id: string } };
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 export default async function CoinPage({ params }: Props) {
   const id = params.id;
-  const coin = await fetchCoinDetail(id);
-  sleep(2000)
+  // const coin = await fetchCoinDetail(id);
   const chart = await fetchCoinMarketChart(id, 7);
 
   return (
     <div>
-      <div style={{ maxWidth: 900, margin: '0 auto 12px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
+      {/* <div style={{ maxWidth: 900, margin: '0 auto 12px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
           <img src={coin.image?.large || coin.image?.thumb} alt={coin.name} width={48} height={48} style={{ borderRadius: 10 }} />
           <div>
@@ -36,16 +35,16 @@ export default async function CoinPage({ params }: Props) {
 
           <div style={{ width: 1, height: 36, background: 'rgba(255,255,255,0.03)' }} />
         </div>
-      </div>
+      </div> */}
 
       <div style={{ maxWidth: 900, margin: '0 auto', display: 'grid', gap: 16 }}>
         <div style={{ width: '100%' }}>
           <PriceChart initialData={chart.prices} coinId={id} />
         </div>
 
-        <div style={{ width: '100%' }}>
+        {/* <div style={{ width: '100%' }}>
           <CoinDetails coin={coin} />
-        </div>
+        </div> */}
       </div>
     </div>
   );
