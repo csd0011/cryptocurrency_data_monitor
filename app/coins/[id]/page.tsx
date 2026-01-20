@@ -3,10 +3,11 @@ import { fetchCoinDetail, fetchCoinMarketChart } from '../../api/coingecko';
 import CoinDetails from '../../../components/CoinDetails';
 
 type Props = { params: { id: string } };
-
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 export default async function CoinPage({ params }: Props) {
   const id = params.id;
   const coin = await fetchCoinDetail(id);
+  sleep(2000)
   const chart = await fetchCoinMarketChart(id, 7);
 
   return (
