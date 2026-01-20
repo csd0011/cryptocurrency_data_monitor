@@ -7,7 +7,7 @@ type Props = { params: { id: string } };
 export default async function CoinPage({ params }: Props) {
   const id = params.id;
   const coin = await fetchCoinDetail(id);
-  const chart = await fetchCoinMarketChart(id, 30);
+  const chart = await fetchCoinMarketChart(id, 7);
 
   return (
     <div>
